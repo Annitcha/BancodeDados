@@ -1,0 +1,35 @@
+package bancodedadosmysql;
+
+
+public class EntradaBancodeDados {
+    private String nome_usuario;
+    private char[] senha;
+
+ 
+    void setNome_Usuario(String nome_usuario){
+    	
+    	this.nome_usuario = nome_usuario;
+    }
+    
+    void setSenha(char[] senha){
+    	
+    	this.senha = senha;
+    }
+    
+  
+	   boolean verificarCredenciais(String nome_usuario, char[] senha) {
+    	
+    	if ((this.nome_usuario.equals("root")) && new String(this.senha).equals("root32")) {
+    		
+    		return true;
+    		
+    	}
+    	
+    	else {
+    		
+    		return false;
+    	}
+    		
+    	}
+    	
+}
