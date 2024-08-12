@@ -1,0 +1,85 @@
+package bancodedadosmysql;
+
+import javax.swing.*;
+import java.awt.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class InterfaceGrafica {
+
+    public static void main(String[] args) {
+
+        EntradaBancodeDados usuario = new EntradaBancodeDados();
+
+        JFrame frame = new JFrame("Banco de dados Anna");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(300, 200);
+
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = toolkit.getScreenSize();
+        Dimension frameSize = frame.getSize();
+        int x = (screenSize.width - frameSize.width) / 2;
+        int y = (screenSize.height - frameSize.height) / 2;
+        frame.setLocation(x, y);
+
+        JPanel panel = new JPanel();
+        frame.add(panel);
+        panel.setLayout(null);
+
+        JLabel instrucao = new JLabel("Digite as suas credenciais:");
+        instrucao.setBounds(2, 10, 300, 20);
+        panel.add(instrucao);
+
+        JLabel userLabel = new JLabel("Usuário:");
+        userLabel.setBounds(2, 30, 80, 25);
+        panel.add(userLabel);
+
+        JTextField userText = new JTextField(20);
+        userText.setBounds(51, 30, 165, 25);
+        panel.add(userText);
+
+        JLabel passwordLabel = new JLabel("Senha:");
+        passwordLabel.setBounds(2, 60, 80, 25);
+        panel.add(passwordLabel);
+
+        JPasswordField passwordText = new JPasswordField(20);
+        passwordText.setBounds(51, 60, 165, 25);
+        panel.add(passwordText);
+
+        JButton loginButton = new JButton("Login");
+        loginButton.setBounds(105, 100, 80, 25);
+        panel.add(loginButton);
+
+        frame.setVisible(true);
+
+        loginButton.addActionListener(e -> {
+            String user = userText.getText();
+            char[] senha = passwordText.getPassword();
+
+            usuario.setNome_Usuario(user);
+            usuario.setSenha(senha);
+
+            try {
+                if (usuario.verificarCredenciais(user, senha)) {
+                    Connection connection = ConnectionFactory.getConnection();
+                    if (connection != null) {
+                        JOptionPane.showMessageDialog(frame, "Credenciais corretas! Conexão bem-sucedida com o banco de dados.");
+                        
+                        // Fecha a janela de login
+                        frame.dispose();
+
+                        // Abre a nova janela com a lista de bancos de dados
+                        new BancodeDados(connection);
+                        
+                    } else {
+                        throw new SQLException("Erro ao acessar o banco de dados");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Credenciais incorretas!");
+                }
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(frame, "Erro: " + ex.getMessage());
+            }
+        });
+    }
+}
